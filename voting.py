@@ -24,6 +24,7 @@ def vote(obj, num_participants):
 				print(result + " passes!")
 				films[person] = result
 				print("\n")
+		# (ex: {"Nico": "TDK", "Britt": "Saw", "RFs": "T2"}
 		return films
 	elif len(obj) == 2:
 		print("The two movies are:", obj)
@@ -42,20 +43,18 @@ def vote(obj, num_participants):
 			return result
 
 
-def RANKING(movie_info):
+def RANKING(movie_dict):
 	# key = person, val = dictionary with movie rankings
 	people = {}
-	# dictionary of size n
-	n_films = movie_info[1]
 	# key = movie, val = points?
 	movies = {}
-	for person in n_films:
+	for person in movie_dict:
 		# every movie will start at 0 (i.e., TDK: 0)
-		movies[n_films[person]] = 0
-		print([n_films[movie] for movie in n_films])
+		movies[movie_dict[person]] = 0
+		print([movie_dict[movie] for movie in movie_dict])
 		print(person + ", these are the films available.  Please rank your top 4 (or 3) from best to worst!")
 		movie_ranks = {}
-		for i in range(1, len(n_films) + 1):
+		for i in range(1, len(movie_dict) + 1):
 			movie = input("#" + str(i) + "? ")
 			movie_ranks[i] = movie
 		# each person has their own dictionary of movies and their ranks
@@ -72,11 +71,11 @@ def RANKING(movie_info):
 	if len(movies) < 4:
 		# remove film with highest number of points
 		movies.popitem()
-		movie_info[1] = [movie for movie in movies]
-		return movie_info
+		final = [movie for movie in movies]
+		return final
 	else:
-		movie_info[1] = [movie for movie in movies]
-		return movie_info
+		ranks = [movie for movie in movies]
+		return ranks
 
 
 def main():
@@ -96,35 +95,31 @@ def main():
 		# each person has two movies
 		movie_dict[name] = [movie1, movie2]
 		print("\n")
-	info = [{"Date": day, "Theme": theme, "People": people, "Movie Choices": movie_dict}]
+	info = {"Date": day, "Theme": theme, "People": people, "Movie Choices": movie_dict}
 	print("\n")
 	# ROUND 1
 	# key = person, val = 1 film
 	# should finish with n films
-	n_films = vote(movie_dict, len(info["People"]))
-	info.append(n_films)
+	n_films = vote(info["Movie Choices"], len(info["People"]))
 	print("\n")
 	# RANKING
-	info = RANKING(info)
+	semis = RANKING(n_films)
 	# PAIRING/FINAL
-	if len(info[1]) > 2:
-		movies = info[1]
+	if len(semis) > 2:
 		# 1 v 4
-		pairing1 = [movies[0], movies[3]]
+		pairing1 = [semis[0], semis[3]]
 		# 2 v 3
-		pairing2 = [movies[1], movies[2]]
+		pairing2 = [semis[1], semis[2]]
 		winner1 = vote(pairing1, len(info["People"]))
 		winner2 = vote(pairing2, len(info["People"]))
 		print("FINAL!")
-		winner = vote([winner1, winner2], len(info["People"]))
-		info.append(winner)
-		print("And the winner is ... " + winner + "!")
+		info["Winner"] = vote([winner1, winner2], len(info["People"]))
+		print("And the winner is ... " + info["Winner"] + "!")
 		return info
 	else:
 		print("FINAL!")
-		winner = vote(info[1], len(info["People"]))
-		info.append(winner)
-		print("And the winner is ... " + winner + "!")
+		info["Winner"] = vote(semis, len(info["People"]))
+		print("And the winner is ... " + info["Winner"] + "!")
 		return info
 
 
