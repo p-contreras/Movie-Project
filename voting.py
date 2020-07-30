@@ -115,12 +115,16 @@ def main():
 		print("FINAL!")
 		info["Winner"] = vote([winner1, winner2], len(info["People"]))
 		print("And the winner is ... " + info["Winner"] + "!")
-		return info
 	else:
 		print("FINAL!")
 		info["Winner"] = vote(semis, len(info["People"]))
 		print("And the winner is ... " + info["Winner"] + "!")
-		return info
+
+	print('RFs is a Jedi')
+	
+	return info
+
+	
 
 
 if __name__ == '__main__':

@@ -1,8 +1,18 @@
 # Movie-Project
 
-voting.py --> dict (ex: {"Date": 28-07-2020, "Theme": "Action", "People": ["Ringo", "George", "Paul", "John"], 
-                         "Movie Choices": {"Ringo": ["TDK", "T2"], "George": ["Saw", "Rocketman"], 
-                                           "Paul": ["Die Hard", "Matrix"], "John": ["Indiana Jones", "Godfather"]}, "Winner": "Godfather"}
+voting.py
+	output object:  dictionary
+	e.g: {"Date": 28-07-2020, 
+			"Theme": "Action", 
+			"People": ["Ringo", "George", "Paul", "John"], 
+			"Movie Choices": {"Ringo": ["TDK", "T2"], 
+								"George": ["Saw", "Rocketman"], 
+								"Paul": ["Die Hard", "Matrix"], 
+								"John": ["Indiana Jones", "Godfather"]}, 
+			"Winner": "Godfather"}
+			
+{"Date": "28-07-2020", "Theme": "Action", "People": ["Ringo", "George", "Paul", "John"], "Movie Choices": {"Ringo": ["TDK", "T2"], "George": ["Saw", "Rocketman"], "Paul": ["Die Hard", "Matrix"], "John": ["Indiana Jones", "Godfather"]}, "Winner": "Godfather"}
+
 
 DB name: msp
 
