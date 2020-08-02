@@ -7,28 +7,30 @@ import datetime
 
 def vote(obj, num_participants):
 	if len(obj) > 2:
-		films = {}
-		for person in obj:
-			print("These are the two films for " + person + ": ", obj[person])
-			vote1 = int(input("How many people vote for " + obj[person][0] + "? "))
+		t = obj["Type"]
+		mt_choices = obj["%s Choices" % t]
+		mts = {}
+		for person in mt_choices:
+			print(("These are the two %s" + "s for " + person + ": ") % t.lower(), mt_choices[person])
+			vote1 = int(input("How many people vote for " + mt_choices[person][0] + "? "))
 			# second film gets (n - vote1) votes
 			vote2 = (num_participants - vote1)
 			if vote1 > vote2:
-				films[person] = obj[person][0]
+				mts[person] = mt_choices[person][0]
 				print("\n")
 			elif vote2 > vote1:
-				films[person] = obj[person][1]
+				mts[person] = mt_choices[person][1]
 				print("\n")
 			else:
 				print("Coin toss!")
 				print("...")
 				time.sleep(5)
-				result = random.choice(obj[person])
+				result = random.choice(mt_choices[person])
 				print(result + " passes!")
-				films[person] = result
+				mts[person] = result
 				print("\n")
 		# (ex: {"Nico": "TDK", "Britt": "Saw", "RFs": "T2"}
-		return films
+		return mts
 	elif len(obj) == 2:
 		print("The two movies are:", obj)
 		vote1 = int(input("How many people vote for " + obj[0] + "? "))
@@ -83,27 +85,29 @@ def RANKING(movie_dict):
 
 def main():
 	day = datetime.datetime.today()
-	theme = input("What's the movie theme for tonight? ")
-	people = []
+	mt = int(input("Are we voting for a movie or a tv show?  (For movie type 0, for tv show type 1) "))
+	mt = "Movie" if mt == 0 else "TV Show"
+	if mt == "Movie":
+		theme = input("What's the movie theme for tonight? ")
+	else:
+		theme = "NULL"
 	num_people = int(input("How many people are there in the table? "))
-	for person in range(num_people):
-		name = input("Input a name: ")
-		people.append(name)
+	people = [input("Input a name: ") for person in range(num_people)]
 	print("\n")
-	# people as keys and movie lists as values
-	movie_dict = dict()
+	# people as keys and movie/tv lists as values
+	mt_dict = dict()
 	for name in people:
-		movie1 = input("1st movie for " + name + "? ")
-		movie2 = input("2nd movie for " + name + "? ")
-		# each person has two movies
-		movie_dict[name] = [movie1, movie2]
+		choice1 = input(("1st %s for " + name + "? ") % mt.lower())
+		choice2 = input(("2nd %s for " + name + "? ") % mt.lower())
+		# each person has two movies/tv shows
+		mt_dict[name] = [choice1, choice2]
 		print("\n")
-	info = {"Date": str(day), "Theme": theme, "People": people, "Movie Choices": movie_dict}
+	info = {"Date": day, "Type": mt, "Theme": theme, "People": people, "%s Choices" % mt: mt_dict}
 	print("\n")
 	# ROUND 1
-	# key = person, val = 1 film
-	# should finish with n films
-	n_films = vote(info["Movie Choices"], len(info["People"]))
+	# key = person, val = 1 film/tv show
+	# should finish with n films/tv shows
+	n_films = vote(info, len(info["People"]))
 	print("\n")
 	# RANKING
 	semis = RANKING(n_films)
