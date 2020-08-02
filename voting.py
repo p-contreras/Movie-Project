@@ -1,5 +1,8 @@
-import random, operator, time
-from datetime import date
+import random
+import operator
+import time
+import datetime
+
 
 
 def vote(obj, num_participants):
@@ -79,7 +82,7 @@ def RANKING(movie_dict):
 
 
 def main():
-	day = date.today()
+	day = datetime.datetime.today()
 	theme = input("What's the movie theme for tonight? ")
 	people = []
 	num_people = int(input("How many people are there in the table? "))
@@ -95,7 +98,7 @@ def main():
 		# each person has two movies
 		movie_dict[name] = [movie1, movie2]
 		print("\n")
-	info = {"Date": day, "Theme": theme, "People": people, "Movie Choices": movie_dict}
+	info = {"Date": str(day), "Theme": theme, "People": people, "Movie Choices": movie_dict}
 	print("\n")
 	# ROUND 1
 	# key = person, val = 1 film
@@ -120,6 +123,7 @@ def main():
 		info["Winner"] = vote(semis, len(info["People"]))
 		print("And the winner is ... " + info["Winner"] + "!")
 
+	print(info)
 	print('RFs is a Jedi')
 	
 	return info

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 sql.py
+python3 sqlsito.py
