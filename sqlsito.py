@@ -63,8 +63,6 @@ def query(cnx, tableName, winningMovie, mdict):
 		return winning_movie_id
 
 	else:
-		people = mdict['People']
-
 		#get all relevant IDs first
 		for t in tableName:
 			sql_query = "SELECT * FROM %s WHERE " %(t)
@@ -202,7 +200,6 @@ def voting_data(cnx, mdict):
 
 
 def write_data(cnx, sqlStatement):
-	success = 0
 
 	crs = cnx.cursor()
 
@@ -217,14 +214,11 @@ def write_data(cnx, sqlStatement):
 				print('Commiting changes to db...')
 				cnx.commit()
 				print('Commit complete.')
-				success = 1
 			except Exception as e:
 				print('ERROR:',e)
 
 		except Exception as e:
 			print('ERROR:',e)
-
-	return success
 
 def new_movie_dict(mdict):
 	movies = []
