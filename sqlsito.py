@@ -4,6 +4,16 @@ import sys
 
 import voting
 
+'''
+TO-DO - 8/5/2020
+
+1. Check password hashing (encryption)
+2. Add unique movie choices
+3. Add unique people choices
+
+'''
+
+
 
 DB = 'msp'
 TEST = input('Is this a TEST? 1 for yes 0 for no')
