@@ -4,22 +4,26 @@ import time
 import datetime
 
 
+# "mt" = movie or tv show
 
 def vote(obj, num_participants):
-	if len(obj) > 2:
-		t = obj["Type"]
-		mt_choices = obj["%s Choices" % t]
-		mts = {}
+	if isinstance(obj, dict):
+		mt_choices = obj["Choices"]
+		n_mts = {}
 		for person in mt_choices:
-			print(("These are the two %s" + "s for " + person + ": ") % t.lower(), mt_choices[person])
-			vote1 = int(input("How many people vote for " + mt_choices[person][0] + "? "))
-			# second film gets (n - vote1) votes
-			vote2 = (num_participants - vote1)
+			print("These are the two options for " + person + ": ", mt_choices[person])
+			while True:
+				vote1 = int(input("How many people vote for " + mt_choices[person][0] + "? "))
+				# second film gets (n - vote1) votes
+				vote2 = (num_participants - vote1)
+				if vote_check(vote1, vote2, num_participants):
+					break
+				print("Incorrect number of votes!  Please try again")
 			if vote1 > vote2:
-				mts[person] = mt_choices[person][0]
+				n_mts[person] = mt_choices[person][0]
 				print("\n")
 			elif vote2 > vote1:
-				mts[person] = mt_choices[person][1]
+				n_mts[person] = mt_choices[person][1]
 				print("\n")
 			else:
 				print("Coin toss!")
@@ -27,15 +31,18 @@ def vote(obj, num_participants):
 				time.sleep(5)
 				result = random.choice(mt_choices[person])
 				print(result + " passes!")
-				mts[person] = result
+				n_mts[person] = result
 				print("\n")
 		# (ex: {"Nico": "TDK", "Britt": "Saw", "RFs": "T2"}
-		return mts
-	elif len(obj) == 2:
-		print("The two movies are:", obj)
-		vote1 = int(input("How many people vote for " + obj[0] + "? "))
-		# second film gets (n - vote1) votes
-		vote2 = (num_participants - vote1)
+		return n_mts
+	elif isinstance(obj, list):
+		while True:
+			vote1 = int(input("How many people vote for " + obj[0] + "? "))
+			# second film gets (n - vote1) votes
+			vote2 = (num_participants - vote1)
+			if vote_check(vote1, vote2, num_participants):
+				break
+			print("Incorrect number of votes!  Please try again")
 		if vote1 > vote2:
 			return obj[0]
 		elif vote2 > vote1:
@@ -48,39 +55,46 @@ def vote(obj, num_participants):
 			return result
 
 
-def RANKING(movie_dict):
-	# key = person, val = dictionary with movie rankings
+def vote_check(vote1, vote2, num_participants):
+	return (vote1 >= 0 and vote2 >= 0) and (vote1 + vote2 == num_participants)
+
+
+def ranking(mts_dict):
+	# key = person, val = dictionary with movie/tv show rankings
 	people = {}
-	# key = movie, val = points?
-	movies = {}
-	for person in movie_dict:
-		# every movie will start at 0 (i.e., TDK: 0)
-		movies[movie_dict[person]] = 0
-		print([movie_dict[movie] for movie in movie_dict])
-		print(person + ", these are the films available.  Please rank your top 4 (or 3) from best to worst!")
-		movie_ranks = {}
-		for i in range(1, len(movie_dict) + 1):
-			movie = input("#" + str(i) + "? ")
-			movie_ranks[i] = movie
+	# key = movie/tv show, val = sum of ranks
+	mts = {}
+	for person in mts_dict:
+		# every movie/tv show will start at 0 (i.e., TDK: 0)
+		mts[mts_dict[person]] = 0
+		print([mts_dict[mt] for mt in mts_dict])
+		print(person + ", these are the options available.  Please rank them from best to worst!")
+		mts_ranks = {}
+		for i in range(1, len(mts_dict) + 1):
+			while True:
+				mt = input("#" + str(i) + "? ")
+				if mt in [mts_dict[x] for x in mts_dict]:
+					break
+				print("Please type in the movie correctly!  (Case sensitive)")
+			mts_ranks[i] = mt
 		# each person has their own dictionary of movies and their ranks
-		people[person] = movie_ranks
+		people[person] = mts_ranks
 		print("\n")
 	# tally up the ranks
 	for person in people:
 		for rank in people[person]:
-			movie = people[person][rank]
-			movies[movie] += rank
+			mt = people[person][rank]
+			mts[mt] += rank
 	# sort the dictionary based on the values
-	movies = dict(sorted(movies.items(), key=operator.itemgetter(1)))
-	# if we have 3 films, we go directly to the FINAL
-	if len(movies) < 4:
-		# remove film with highest number of points
-		movies.popitem()
-		final = [movie for movie in movies]
+	mts = dict(sorted(mts.items(), key=operator.itemgetter(1)))
+	if len(mts) == 3:
+		mts.popitem()
+		final = [mt for mt in mts]
 		return final
-	else:
-		ranks = [movie for movie in movies]
-		return ranks
+	while len(mts) > 4:
+		mts.popitem()
+	ranks = [mt for mt in mts]
+	return ranks
 
 
 def main():
@@ -102,37 +116,38 @@ def main():
 		# each person has two movies/tv shows
 		mt_dict[name] = [choice1, choice2]
 		print("\n")
-	info = {"Date": day, "Type": mt, "Theme": theme, "People": people, "%s Choices" % mt: mt_dict}
+	info = {"Date": day, "Type": mt, "Theme": theme, "People": people, "Choices": mt_dict}
 	print("\n")
 	# ROUND 1
-	# key = person, val = 1 film/tv show
 	# should finish with n films/tv shows
-	n_films = vote(info, len(info["People"]))
+	n_mts = vote(info, len(info["People"]))
 	print("\n")
 	# RANKING
-	semis = RANKING(n_films)
+	semis = ranking(n_mts)
+	print("These are the remaining options! ", semis)
+	time.sleep(3)
 	# PAIRING/FINAL
 	if len(semis) > 2:
 		# 1 v 4
 		pairing1 = [semis[0], semis[3]]
 		# 2 v 3
 		pairing2 = [semis[1], semis[2]]
+		print("The first pairing is:", pairing1)
 		winner1 = vote(pairing1, len(info["People"]))
+		print("The second pairing is:", pairing2)
 		winner2 = vote(pairing2, len(info["People"]))
-		print("FINAL!")
+		print("FINAL!", [winner1, winner2])
 		info["Winner"] = vote([winner1, winner2], len(info["People"]))
 		print("And the winner is ... " + info["Winner"] + "!")
 	else:
-		print("FINAL!")
+		print("FINAL!", semis)
 		info["Winner"] = vote(semis, len(info["People"]))
 		print("And the winner is ... " + info["Winner"] + "!")
 
 	print(info)
 	print('RFs is a Jedi')
-	
-	return info
 
-	
+	return info
 
 
 if __name__ == '__main__':
