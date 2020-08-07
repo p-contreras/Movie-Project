@@ -8,8 +8,6 @@ import voting
 TO-DO - 8/5/2020
 
 1. Check password hashing (encryption)
-2. Add unique movie choices
-3. Add unique people choices
 
 '''
 
@@ -19,7 +17,7 @@ DB = 'msp'
 TEST = input('Is this a TEST? 1 for yes 0 for no')
 
 def movies(mdict):
-	sql_statement_movies = "INSERT INTO Movies(Title,Test) VALUES (\""
+	sql_statement_movies = "INSERT IGNORE INTO Movies(Title,Test) VALUES (\""
 
 	for i in range(len(mdict['Movie List'])):
 		sql_statement_movies += mdict['Movie List'][i]
@@ -32,7 +30,7 @@ def movies(mdict):
 	return sql_statement_movies
 
 def people(mdict):
-	sql_statement_people = "INSERT INTO People(Name,Test) VALUES (\""
+	sql_statement_people = "INSERT IGNORE INTO People(Name,Test) VALUES (\""
 
 	for i in range(len(mdict['People'])):
 		sql_statement_people += mdict['People'][i]
@@ -251,8 +249,8 @@ def close_connection(cnx):
 def start_connection(db_name):
 	try:
 		print('Attempting connection...')
-		connection = mysql.connector.connect(user = 'root',
-								password = 'themiskyrifus_db',
+		connection = mysql.connector.connect(user = 'rifus',
+								password = 'BeatlesGOATs',
 								host = '192.168.1.106',
 								database = db_name)
 		print('Connection successful')
