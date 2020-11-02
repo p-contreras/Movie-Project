@@ -162,14 +162,14 @@ def voting_info(cnx, mdict):
 		print('people_ids',people_ids)
 		print('movie_ids',movie_ids)
 
-		sql_statement_voting_info == None
+		sql_statement_voting_info = None
 
 	else:
 		for i in movie_ids:
 			mid = movie_ids[i]
 
-			for p in mdict['Movie Choices']:
-				for mc in mdict['Movie Choices'][p]:
+			for p in mdict['Choices']:
+				for mc in mdict['Choices'][p]:
 					if i == mc:
 						pid = people_ids[p]
 						if i == list(movie_ids.keys())[-1]:
@@ -230,8 +230,8 @@ def write_data(cnx, sqlStatement):
 
 def new_movie_dict(mdict):
 	movies = []
-	for i in mdict['Movie Choices']:
-		for m in mdict['Movie Choices'][i]:
+	for i in mdict['Choices']:
+		for m in mdict['Choices'][i]:
 			movies.append(m)
 
 	mdict['Movie List'] = movies
