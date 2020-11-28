@@ -1,5 +1,12 @@
+use msp;
+
 SELECT *
 FROM Movies;
+
+DESCRIBE Movies;
+
+SELECT *
+FROM TV_Shows;
 
 SELECT *
 FROM Voting_Data;
@@ -14,11 +21,19 @@ SELECT Voting_Data.Date, Voting_Data.Theme, Movies.Title, Voting_Data.Winner_Mov
 FROM Voting_Data INNER JOIN Movies
 	WHERE Voting_Data.Winner_Movie_ID = Movies.Movie_ID;
 
-SELECT Voting_Info.Voting_Data_ID, Voting_Data.Date, Voting_Data.Theme, People.Name,
-		Movies.Movie_ID, Movies.Title
-FROM Voting_Info INNER JOIN Voting_Data
-	ON Voting_Info.Voting_Data_ID = Voting_Data.ID
-    INNER JOIN Movies
-    ON Voting_Info.Movie_ID = Movies.Movie_ID
-    INNER JOIN People
-    ON Voting_Info.People_ID = People.People_ID;
+SELECT vi.Voting_Data_ID, vd.Date, vd.Theme, p.Name,
+		m.Movie_ID, m.Title
+FROM Voting_Info vi
+	INNER JOIN Voting_Data vd
+	ON vi.Voting_Data_ID = vd.ID
+    INNER JOIN Movies m
+    ON vi.Movie_ID = m.Movie_ID
+    INNER JOIN People p
+    ON vi.People_ID = p.People_ID;
+    
+# how many votes per person per voting instance?    
+SELECT v.Voting_Data_ID, v.People_ID, p.Name, COUNT(v.People_ID) AS Num_Movies
+FROM Voting_Info v
+	INNER JOIN People p
+    ON v.People_ID = p.People_ID
+GROUP BY Voting_Data_ID, People_ID;

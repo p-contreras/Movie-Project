@@ -17,17 +17,30 @@ DB = 'msp'
 TEST = input('Is this a TEST? 1 for yes 0 for no ')
 
 def movies(mdict):
-	sql_statement_movies = "INSERT IGNORE INTO Movies(Title,Test) VALUES (\""
+	sql_statement_movies = "INSERT IGNORE INTO Movies(Title,Test) VALUES ('"
 
 	for i in range(len(mdict['Movie List'])):
 		sql_statement_movies += mdict['Movie List'][i]
 
 		if i == len(mdict['Movie List']) -1:
-			sql_statement_movies += '\",%s)' %(TEST)
+			sql_statement_movies += "', {})".format(TEST)
 		else:
-			sql_statement_movies += '\",%s),(\"' %(TEST)
+			sql_statement_movies += "',{}), ('".format(TEST)
 
 	return sql_statement_movies
+
+def tv_show(mdict):
+	sql_statement_tv = "INSERT IGNORE INTO TV_Shows(Title,Test) VALUES ('"
+
+	for i in range(len(mdict['Movie List'])):
+		sql_statement_tv += mdict['Movie List'][i]
+
+		if i == len(mdict['Movie List']) -1:
+			sql_statement_tv += "', {})".format(TEST)
+		else:
+			sql_statement_tv += "',{}), ('".format(TEST)
+
+	return sql_statement_tv
 
 def people(mdict):
 	sql_statement_people = "INSERT IGNORE INTO People(Name,Test) VALUES (\""
@@ -295,8 +308,8 @@ def main():
 	print('hello Rifus')
 
 	movie_dict = voting.main()
-	# movie_dict = {"Date": str(datetime.datetime.now()), "Theme": "Action", "People": ["Ringo", "George", "Paul", "John"], 
-	#               "Movie Choices": {"Ringo": ["TDK", "T2"], "George": ["Saw", "Rocketman"], "Paul": ["Die Hard", "Matrix"], "John": ["Indiana Jones", "Godfather"]}, 
+	# movie_dict = {"Date": str(datetime.datetime.now()), "Type" = "Movie", "Theme": "Action", "People": ["Ringo", "George", "Paul", "John"], 
+	#               "Choices": {"Ringo": ["TDK", "T2"], "George": ["Saw", "Rocketman"], "Paul": ["Die Hard", "Matrix"], "John": ["Indiana Jones", "Godfather"]}, 
 	#               "Winner": "Godfather"}
 
 	movie_dict = new_movie_dict(movie_dict)
@@ -308,17 +321,20 @@ def main():
 	if conn is not None:
 		sql_statement = []
 
-		#movies
-		sql_statement.append(movies(movie_dict))
+		if movie_dict["Type"] == "Movie":
+			# movies
+			sql_statement.append(movies(movie_dict))
+		elif movie_dict["Type"] == "TV Show":
+			sql_statement.append(tv_show(movie_dict))
 		#people
 		sql_statement.append(people(movie_dict))
 
 		try:
-			print('Writing People and Movie data first...')
+			print('Writing People and Movie/TV Show data first...')
 			write_data(conn, sql_statement)
-			print('Success. People and Movie data inserted')
+			print('Success. People and Movie/TV Show data inserted')
 		except Exception as e:
-			print('ERROR: Something happened writing Movie and People data -',e)
+			print('ERROR: Something happened writing Movie/TV Show and People data -',e)
 			close_connection(conn)
 			
 			sys.exit('Goodbye')
