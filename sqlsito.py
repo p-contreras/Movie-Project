@@ -282,7 +282,7 @@ def start_connection(db_name):
 		print('Attempting connection...')
 		connection = mysql.connector.connect(user = 'rifus',
 								password = 'BeatlesGOATs',
-								host = '192.168.1.106',
+								host = '192.168.1.61',
 								database = db_name)
 		print('Connection successful')
 		return connection
